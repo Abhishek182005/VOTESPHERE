@@ -1,0 +1,207 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}VoteSphere{% endblock %} | VoteSphere</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;}
+    body{background:#f0f4f8;font-family:'Segoe UI',system-ui,sans-serif;color:#1a1a2e;min-height:100vh;display:flex;flex-direction:column;}
+
+    /* ── NAVBAR ── */
+    .navbar{background:linear-gradient(135deg,#1d4ed8 0%,#2563eb 60%,#3b82f6 100%)!important;box-shadow:0 4px 24px rgba(37,99,235,.4);padding:.75rem 0;}
+    .navbar-brand{font-weight:800;font-size:1.3rem;color:#fff!important;letter-spacing:-.3px;}
+    .navbar-brand i{color:#fde68a;}
+    .navbar .nav-link{color:rgba(255,255,255,.88)!important;font-weight:500;font-size:.88rem;padding:.45rem .9rem!important;border-radius:8px;transition:all .18s;}
+    .navbar .nav-link:hover{color:#fff!important;background:rgba(255,255,255,.16);}
+    .badge-admin{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;font-size:.7rem;padding:3px 9px;border-radius:20px;font-weight:700;margin-left:4px;}
+    .user-avatar{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.4);display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;color:#fff;}
+
+    /* ── LAYOUT ── */
+    .main-content{flex:1;}
+
+    /* ── CARDS ── */
+    .card{border:none;border-radius:18px;box-shadow:0 2px 12px rgba(0,0,0,.06);transition:transform .2s,box-shadow .2s;}
+    .card:hover{box-shadow:0 6px 28px rgba(0,0,0,.1);}
+    .card-header{border-radius:18px 18px 0 0!important;border-bottom:none;padding:1.2rem 1.5rem;}
+    .card-header-indigo{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;}
+    .card-header-dark{background:linear-gradient(135deg,#0f172a,#1e3a5f);color:#fff;}
+    .card-footer{background:#f8fafd;border-top:1px solid #eef2f7;border-radius:0 0 18px 18px!important;padding:.9rem 1.5rem;}
+
+    /* ── BUTTONS ── */
+    .btn{font-weight:600;font-size:.85rem;border-radius:10px;transition:all .18s;letter-spacing:.01em;}
+    .btn-primary{background:linear-gradient(135deg,#2563eb,#1d4ed8);border:none;box-shadow:0 4px 14px rgba(37,99,235,.35);}
+    .btn-primary:hover,.btn-primary:focus{background:linear-gradient(135deg,#1d4ed8,#1e40af);box-shadow:0 6px 20px rgba(37,99,235,.45);transform:translateY(-1px);}
+    .btn-success{background:linear-gradient(135deg,#10b981,#059669);border:none;box-shadow:0 4px 12px rgba(16,185,129,.25);}
+    .btn-success:hover{background:linear-gradient(135deg,#059669,#047857);transform:translateY(-1px);}
+    .btn-danger{background:linear-gradient(135deg,#ef4444,#dc2626);border:none;box-shadow:0 4px 12px rgba(239,68,68,.25);}
+    .btn-danger:hover{background:linear-gradient(135deg,#dc2626,#b91c1c);transform:translateY(-1px);}
+    .btn-warning{background:linear-gradient(135deg,#f59e0b,#d97706);border:none;color:#fff;}
+    .btn-outline-primary{border:2px solid #2563eb;color:#2563eb;background:transparent;}
+    .btn-outline-primary:hover{background:#2563eb;color:#fff;border-color:#2563eb;}
+    .btn-outline-secondary{border:1.5px solid #cbd5e1;color:#64748b;}
+    .btn-outline-secondary:hover{background:#f1f5f9;color:#334155;border-color:#94a3b8;}
+    .btn-outline-success{border:1.5px solid #10b981;color:#059669;}
+    .btn-outline-success:hover{background:#d1fae5;}
+    .btn-outline-danger{border:1.5px solid #ef4444;color:#dc2626;}
+    .btn-outline-danger:hover{background:#fee2e2;}
+    .btn-outline-warning{border:1.5px solid #f59e0b;color:#d97706;}
+    .btn-outline-warning:hover{background:#fef3c7;}
+
+    /* ── FORMS ── */
+    .form-control,.form-select{border-radius:10px;border:1.5px solid #dde3ee;padding:.6rem 1rem;font-size:.9rem;transition:border-color .2s,box-shadow .2s;background:#fff;}
+    .form-control:focus,.form-select:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.14);outline:none;}
+    .input-group-text{border-radius:10px 0 0 10px;border:1.5px solid #dde3ee;border-right:none;background:#eff6ff;color:#2563eb;}
+    .input-group .form-control{border-radius:0 10px 10px 0;}
+    .form-label{font-weight:600;font-size:.83rem;color:#374151;margin-bottom:.35rem;text-transform:uppercase;letter-spacing:.04em;}
+    .form-text{font-size:.76rem;color:#94a3b8;}
+
+    /* ── ALERTS ── */
+    .alert{border-radius:14px;border:none;font-size:.875rem;font-weight:500;display:flex;align-items:center;gap:.6rem;}
+    .alert-success{background:#d1fae5;color:#065f46;}
+    .alert-danger{background:#fee2e2;color:#991b1b;}
+    .alert-warning{background:#fef3c7;color:#92400e;}
+    .alert-info{background:#dbeafe;color:#1e40af;}
+
+    /* ── HERO ── */
+    .hero-section{background:linear-gradient(135deg,#1d4ed8 0%,#2563eb 55%,#3b82f6 100%);color:#fff;padding:3.5rem 0 3rem;margin-bottom:2.5rem;border-radius:0 0 40px 40px;position:relative;overflow:hidden;}
+    .hero-section::before{content:'';position:absolute;top:-80px;right:-80px;width:350px;height:350px;background:rgba(255,255,255,.05);border-radius:50%;}
+    .hero-section::after{content:'';position:absolute;bottom:-100px;left:-50px;width:250px;height:250px;background:rgba(255,255,255,.04);border-radius:50%;}
+
+    /* ── POLL CARDS ── */
+    .poll-card{transition:transform .22s,box-shadow .22s!important;}
+    .poll-card:hover{transform:translateY(-5px)!important;box-shadow:0 14px 40px rgba(37,99,235,.16)!important;}
+    .option-chip{display:flex;align-items:flex-start;gap:.6rem;padding:.55rem .75rem;background:#eff6ff;border-radius:10px;font-size:.85rem;color:#374151;font-weight:500;}
+    .option-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+
+    /* ── PROGRESS ── */
+    .progress{border-radius:30px;height:26px;background:#dbeafe;overflow:hidden;}
+    .progress-bar{display:flex;align-items:center;justify-content:center;font-size:.74rem;font-weight:700;border-radius:30px;transition:width .7s cubic-bezier(.4,0,.2,1);}
+
+    /* ── WINNER ── */
+    .winner-badge{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border-radius:20px;padding:3px 10px;font-size:.7rem;font-weight:700;display:inline-flex;align-items:center;gap:3px;}
+
+    /* ── VOTE OPTIONS ── */
+    .vote-option{cursor:pointer;border:2px solid #e8ecf4;border-radius:14px;padding:1rem 1.2rem;transition:all .2s;background:#fff;display:flex;align-items:center;gap:.75rem;}
+    .vote-option:hover{border-color:#2563eb;background:#eff6ff;}
+    .vote-option input[type=radio]{accent-color:#2563eb;width:1.15em;height:1.15em;flex-shrink:0;}
+    .vote-option input[type=radio]:checked~*{color:#2563eb;}
+
+    /* ── TABLE ── */
+    .table{font-size:.875rem;}
+    .table th{font-weight:700;color:#64748b;text-transform:uppercase;font-size:.7rem;letter-spacing:.06em;border-bottom:2px solid #eef2f7;padding:.85rem 1rem;}
+    .table td{vertical-align:middle;border-color:#f4f7fb;padding:.8rem 1rem;}
+    .table-hover tbody tr:hover{background:#f0f7ff;}
+
+    /* ── STAT CARDS ── */
+    .stat-card{border-radius:18px;padding:1.6rem 1.4rem;background:#fff;box-shadow:0 2px 14px rgba(0,0,0,.06);text-align:center;position:relative;overflow:hidden;}
+    .stat-number{font-size:2.6rem;font-weight:800;line-height:1;margin-bottom:.25rem;}
+    .stat-label{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#94a3b8;}
+    .stat-icon{position:absolute;bottom:-10px;right:-10px;font-size:4.5rem;opacity:.06;}
+
+    /* ── MISC ── */
+    .divider{height:1px;background:linear-gradient(to right,transparent,#e2e8f0,transparent);margin:1.2rem 0;}
+    .text-muted{color:#94a3b8!important;}
+    footer{background:linear-gradient(135deg,#0f172a,#1e3a5f);color:#93c5fd;padding:1.8rem 0;margin-top:auto;}
+    .section-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);border-radius:30px;padding:.3rem 1rem;font-size:.8rem;font-weight:600;}
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'home' %}">
+      <span style="width:34px;height:34px;background:rgba(255,255,255,.2);border-radius:10px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i class="bi bi-bar-chart-line-fill" style="color:#fde68a;font-size:1rem;"></i>
+      </span>
+      VoteSphere
+    </a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon" style="filter:invert(1)"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-1 ms-3">
+        <li class="nav-item"><a class="nav-link" href="{% url 'home' %}"><i class="bi bi-house-door me-1"></i>Home</a></li>
+        {% if user.is_authenticated and user.is_staff %}
+        <li class="nav-item"><a class="nav-link" href="{% url 'create' %}"><i class="bi bi-plus-circle me-1"></i>New Poll</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'admin_dashboard' %}"><i class="bi bi-speedometer2 me-1"></i>Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'admin:index' %}"><i class="bi bi-shield-lock me-1"></i>Admin</a></li>
+        {% endif %}
+      </ul>
+      <ul class="navbar-nav ms-auto align-items-center gap-2">
+        {% if user.is_authenticated %}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 py-1" href="#" data-bs-toggle="dropdown">
+            <span class="user-avatar">{{ user.username|first|upper }}</span>
+            <span class="fw-600" style="font-weight:600;">{{ user.username }}</span>
+            {% if user.is_staff %}<span class="badge-admin">Admin</span>{% endif %}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg" style="border-radius:14px;min-width:170px;padding:.4rem;">
+            <li>
+              <span class="dropdown-item-text px-3 pb-1" style="font-size:.78rem;color:#94a3b8;">Signed in as</span>
+            </li>
+            <li>
+              <span class="dropdown-item-text px-3 pb-2" style="font-weight:700;color:#0f172a;font-size:.88rem;">{{ user.username }}</span>
+            </li>
+            <li><hr class="dropdown-divider my-1"></li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center gap-2 text-danger rounded-3" href="{% url 'logout' %}" style="font-size:.875rem;padding:.55rem .85rem;">
+                <i class="bi bi-box-arrow-right"></i>Sign Out
+              </a>
+            </li>
+          </ul>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'login' %}">
+            <i class="bi bi-box-arrow-in-right me-1"></i>Login
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'register' %}" class="btn btn-sm" style="background:rgba(255,255,255,.18);color:#fff;border:1.5px solid rgba(255,255,255,.4);border-radius:10px;font-weight:700;padding:.38rem 1rem;">
+            <i class="bi bi-person-plus me-1"></i>Register
+          </a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="main-content">
+  <div class="container mt-4">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      {% if message.tags == 'success' %}<i class="bi bi-check-circle-fill fs-5"></i>
+      {% elif message.tags == 'danger' %}<i class="bi bi-x-circle-fill fs-5"></i>
+      {% elif message.tags == 'warning' %}<i class="bi bi-exclamation-triangle-fill fs-5"></i>
+      {% else %}<i class="bi bi-info-circle-fill fs-5"></i>{% endif %}
+      <span>{{ message }}</span>
+      <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+
+    {% block main %}{% endblock %}
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col text-center">
+        <div class="d-inline-flex align-items-center gap-2 mb-1">
+          <i class="bi bi-bar-chart-line-fill" style="color:#fde68a;font-size:1.1rem;"></i>
+          <span style="font-weight:800;font-size:1rem;color:#dbeafe;">VoteSphere</span>
+        </div>
+          <div style="font-size:.8rem;color:#60a5fa;">Secure, Simple, Fair Elections</div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

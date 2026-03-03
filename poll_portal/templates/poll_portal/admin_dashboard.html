@@ -1,0 +1,131 @@
+{% extends "poll_portal/base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block main %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h3 style="font-weight:800;color:#0f172a;margin-bottom:.2rem;font-size:1.6rem;">Dashboard</h3>
+    <div class="text-muted" style="font-size:.85rem;">Manage polls, publish results, and monitor voter activity</div>
+  </div>
+  <a href="{% url 'create' %}" class="btn btn-primary px-4 py-2">
+    <i class="bi bi-plus-circle me-2"></i>New Poll
+  </a>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-sm-4">
+    <div class="stat-card">
+      <div class="stat-icon"><i class="bi bi-list-task"></i></div>
+      <div class="stat-number" style="color:#2563eb;">{{ total_polls }}</div>
+      <div class="stat-label">Total Polls</div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="stat-card">
+      <div class="stat-icon"><i class="bi bi-play-circle"></i></div>
+      <div class="stat-number" style="color:#10b981;">{{ active_polls }}</div>
+      <div class="stat-label">Active Polls</div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="stat-card">
+      <div class="stat-icon"><i class="bi bi-people"></i></div>
+      <div class="stat-number" style="color:#f59e0b;">{{ total_votes }}</div>
+      <div class="stat-label">Votes Cast</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header card-header-dark d-flex justify-content-between align-items-center">
+    <div style="font-weight:700;font-size:.95rem;">
+      <i class="bi bi-table me-2"></i>All Polls
+    </div>
+    <span style="background:rgba(255,255,255,.15);color:rgba(255,255,255,.8);font-size:.72rem;font-weight:600;padding:.3em .9em;border-radius:8px;">{{ total_polls }} total</span>
+  </div>
+  <div class="card-body p-0">
+    {% if polls %}
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead>
+          <tr>
+            <th style="padding:.9rem 1.2rem;">Question</th>
+            <th>Votes</th>
+            <th>Status</th>
+            <th>Results</th>
+            <th>Date</th>
+            <th style="padding:.9rem 1.2rem;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for poll in polls %}
+          <tr>
+            <td style="padding:.85rem 1.2rem;">
+              <span style="font-weight:600;color:#0f172a;">{{ poll.question|truncatechars:52 }}</span>
+            </td>
+            <td>
+              <span style="display:inline-flex;align-items:center;gap:4px;background:#dbeafe;color:#2563eb;border-radius:8px;padding:.25rem .65rem;font-weight:700;font-size:.8rem;">
+                <i class="bi bi-people-fill"></i>{{ poll.total }}
+              </span>
+            </td>
+            <td>
+              {% if poll.is_active %}
+              <span style="background:#d1fae5;color:#065f46;font-size:.75rem;font-weight:600;padding:.3em .75em;border-radius:8px;display:inline-block;">
+                <i class="bi bi-circle-fill me-1" style="font-size:.4rem;"></i>Active
+              </span>
+              {% else %}
+              <span style="background:#fee2e2;color:#991b1b;font-size:.75rem;font-weight:600;padding:.3em .75em;border-radius:8px;display:inline-block;">
+                Closed
+              </span>
+              {% endif %}
+            </td>
+            <td>
+              {% if poll.result_published %}
+              <span style="background:#dbeafe;color:#1e40af;font-size:.75rem;font-weight:600;padding:.3em .75em;border-radius:8px;display:inline-block;">
+                <i class="bi bi-eye me-1"></i>Live
+              </span>
+              {% else %}
+              <span style="background:#f1f5f9;color:#64748b;font-size:.75rem;font-weight:600;padding:.3em .75em;border-radius:8px;display:inline-block;">
+                Hidden
+              </span>
+              {% endif %}
+            </td>
+            <td style="font-size:.8rem;color:#94a3b8;">{{ poll.pub_date|date:"M d, Y" }}</td>
+            <td style="padding:.85rem 1.2rem;">
+              <div class="d-flex gap-1 flex-wrap">
+                <a href="{% url 'results' poll.id %}" class="btn btn-outline-primary btn-sm" title="Results"><i class="bi bi-bar-chart"></i></a>
+                <a href="{% url 'voters_list' poll.id %}" class="btn btn-outline-secondary btn-sm" title="Voters"><i class="bi bi-people"></i></a>
+                <a href="{% url 'declare_result' poll.id %}" class="btn btn-sm {% if poll.result_published %}btn-outline-warning{% else %}btn-outline-success{% endif %}" title="Toggle Results">
+                  {% if poll.result_published %}<i class="bi bi-eye-slash"></i>{% else %}<i class="bi bi-eye"></i>{% endif %}
+                </a>
+                <a href="{% url 'toggle_active' poll.id %}" class="btn btn-sm {% if poll.is_active %}btn-outline-danger{% else %}btn-outline-success{% endif %}" title="Toggle Active">
+                  {% if poll.is_active %}<i class="bi bi-stop-circle"></i>{% else %}<i class="bi bi-play-circle"></i>{% endif %}
+                </a>
+                <a href="{% url 'delete' poll.id %}" class="btn btn-danger btn-sm" title="Delete"><i class="bi bi-trash3"></i></a>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="p-5 text-center">
+      <div style="width:64px;height:64px;background:#dbeafe;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+        <i class="bi bi-inbox" style="font-size:1.8rem;color:#2563eb;"></i>
+      </div>
+      <p class="text-muted mb-3">No polls created yet.</p>
+      <a href="{% url 'create' %}" class="btn btn-primary px-4"><i class="bi bi-plus-circle me-2"></i>Create First Poll</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="mt-3 d-flex flex-wrap gap-3" style="font-size:.76rem;color:#94a3b8;">
+  <span><i class="bi bi-bar-chart text-primary me-1"></i>Results</span>
+  <span><i class="bi bi-people text-secondary me-1"></i>Voters</span>
+  <span><i class="bi bi-eye text-success me-1"></i>Publish/Unpublish</span>
+  <span><i class="bi bi-stop-circle text-danger me-1"></i>Open/Close</span>
+  <span><i class="bi bi-trash3 text-danger me-1"></i>Delete</span>
+</div>
+{% endblock %}

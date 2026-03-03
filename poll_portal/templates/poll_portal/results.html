@@ -1,0 +1,125 @@
+{% extends "poll_portal/base.html" %}
+{% block title %}Results{% endblock %}
+{% block main %}
+<div class="row justify-content-center" style="margin-top:1rem;margin-bottom:3rem;">
+  <div class="col-md-9 col-lg-7">
+    <div class="d-flex align-items-center gap-2 mb-3">
+      <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i></a>
+      <span class="text-muted" style="font-size:.85rem;">Back to polls</span>
+    </div>
+    <div class="card shadow" style="border-radius:20px;">
+      <div class="card-header card-header-indigo d-flex justify-content-between align-items-center">
+        <div style="flex:1;">
+          <div style="font-size:.7rem;opacity:.75;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.35rem;">
+            <i class="bi bi-bar-chart-fill me-1"></i>Poll Results
+          </div>
+          <h5 class="mb-0 fw-bold" style="font-size:1.05rem;line-height:1.4;">{{ poll.question }}</h5>
+        </div>
+        <div class="ms-3 flex-shrink-0">
+          {% if poll.result_published %}
+          <span style="background:rgba(16,185,129,.25);color:#a7f3d0;font-size:.72rem;font-weight:700;padding:.35em 1em;border-radius:10px;display:inline-block;">
+            <i class="bi bi-check-circle me-1"></i>Published
+          </span>
+          {% else %}
+          <span style="background:rgba(245,158,11,.25);color:#fde68a;font-size:.72rem;font-weight:700;padding:.35em 1em;border-radius:10px;display:inline-block;">
+            <i class="bi bi-eye-slash me-1"></i>Admin Preview
+          </span>
+          {% endif %}
+        </div>
+      </div>
+      <div class="card-body p-4">
+
+        <div class="mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <span style="width:11px;height:11px;background:#2563eb;border-radius:50%;display:inline-block;flex-shrink:0;"></span>
+              <span style="font-weight:600;color:#0f172a;font-size:.9rem;">{{ poll.option_one }}</span>
+              {% if poll.winner == poll.option_one and poll.total > 0 %}
+              <span class="winner-badge"><i class="bi bi-trophy-fill"></i>Winner</span>
+              {% endif %}
+              {% if user_vote == 'option1' %}
+              <span style="background:#dbeafe;color:#1e40af;font-size:.7rem;font-weight:600;padding:.25em .7em;border-radius:8px;">Your vote</span>
+              {% endif %}
+            </div>
+            <span style="font-size:.8rem;font-weight:600;color:#64748b;">{{ poll.option_one_count }} ({{ poll.percentage_one }}%)</span>
+          </div>
+          <div class="progress">
+            <div class="progress-bar" style="width:{{ poll.percentage_one }}%;background:linear-gradient(135deg,#2563eb,#1d4ed8);">
+              {% if poll.percentage_one > 8 %}{{ poll.percentage_one }}%{% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <span style="width:11px;height:11px;background:#10b981;border-radius:50%;display:inline-block;flex-shrink:0;"></span>
+              <span style="font-weight:600;color:#0f172a;font-size:.9rem;">{{ poll.option_two }}</span>
+              {% if poll.winner == poll.option_two and poll.total > 0 %}
+              <span class="winner-badge"><i class="bi bi-trophy-fill"></i>Winner</span>
+              {% endif %}
+              {% if user_vote == 'option2' %}
+              <span style="background:#dbeafe;color:#1e40af;font-size:.7rem;font-weight:600;padding:.25em .7em;border-radius:8px;">Your vote</span>
+              {% endif %}
+            </div>
+            <span style="font-size:.8rem;font-weight:600;color:#64748b;">{{ poll.option_two_count }} ({{ poll.percentage_two }}%)</span>
+          </div>
+          <div class="progress">
+            <div class="progress-bar" style="width:{{ poll.percentage_two }}%;background:linear-gradient(135deg,#10b981,#059669);">
+              {% if poll.percentage_two > 8 %}{{ poll.percentage_two }}%{% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <span style="width:11px;height:11px;background:#f59e0b;border-radius:50%;display:inline-block;flex-shrink:0;"></span>
+              <span style="font-weight:600;color:#0f172a;font-size:.9rem;">{{ poll.option_three }}</span>
+              {% if poll.winner == poll.option_three and poll.total > 0 %}
+              <span class="winner-badge"><i class="bi bi-trophy-fill"></i>Winner</span>
+              {% endif %}
+              {% if user_vote == 'option3' %}
+              <span style="background:#dbeafe;color:#1e40af;font-size:.7rem;font-weight:600;padding:.25em .7em;border-radius:8px;">Your vote</span>
+              {% endif %}
+            </div>
+            <span style="font-size:.8rem;font-weight:600;color:#64748b;">{{ poll.option_three_count }} ({{ poll.percentage_three }}%)</span>
+          </div>
+          <div class="progress">
+            <div class="progress-bar" style="width:{{ poll.percentage_three }}%;background:linear-gradient(135deg,#f59e0b,#d97706);">
+              {% if poll.percentage_three > 8 %}{{ poll.percentage_three }}%{% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="d-flex justify-content-between align-items-center p-3 rounded-3" style="background:#eff6ff;">
+          <div style="font-weight:700;color:#0f172a;">
+            <i class="bi bi-people-fill me-2" style="color:#2563eb;"></i>{{ poll.total }} total vote{{ poll.total|pluralize }}
+          </div>
+          {% if poll.total > 0 %}
+          <div style="font-size:.82rem;color:#64748b;">Leading: <strong style="color:#2563eb;">{{ poll.winner }}</strong></div>
+          {% endif %}
+        </div>
+      </div>
+      <div class="card-footer d-flex gap-2 flex-wrap">
+        <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-sm">
+          <i class="bi bi-arrow-left me-1"></i>Back
+        </a>
+        {% if user.is_staff %}
+        <a href="{% url 'voters_list' poll.id %}" class="btn btn-outline-primary btn-sm">
+          <i class="bi bi-people me-1"></i>Voters
+        </a>
+        <a href="{% url 'declare_result' poll.id %}" class="btn btn-sm {% if poll.result_published %}btn-outline-warning{% else %}btn-success{% endif %}">
+          {% if poll.result_published %}
+          <i class="bi bi-eye-slash me-1"></i>Unpublish
+          {% else %}
+          <i class="bi bi-send me-1"></i>Publish Results
+          {% endif %}
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

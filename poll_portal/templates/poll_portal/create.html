@@ -1,0 +1,63 @@
+{% extends "poll_portal/base.html" %}
+{% block title %}Create Poll{% endblock %}
+{% block main %}
+<div class="row justify-content-center" style="margin-top:1rem;margin-bottom:3rem;">
+  <div class="col-md-9 col-lg-7">
+    <div class="d-flex align-items-center gap-3 mb-3">
+      <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i></a>
+      <div>
+        <div style="font-weight:800;color:#0f172a;font-size:1.1rem;">Create New Poll</div>
+        <div class="text-muted" style="font-size:.82rem;">Fill in the details below and publish instantly</div>
+      </div>
+    </div>
+    <div class="card shadow" style="border-radius:20px;">
+      <div class="card-header card-header-indigo">
+        <h5 class="mb-0"><i class="bi bi-plus-circle me-2"></i>Poll Details</h5>
+      </div>
+      <div class="card-body p-4">
+        <form method="POST">
+          {% csrf_token %}
+          <div class="mb-4">
+            <label class="form-label">Poll Question</label>
+            {{ form.question }}
+            {% if form.question.errors %}<div style="color:#dc2626;font-size:.8rem;margin-top:.3rem;">{{ form.question.errors }}</div>{% endif %}
+          </div>
+          <div class="divider"></div>
+          <div style="font-weight:700;font-size:.78rem;color:#2563eb;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.75rem;">
+            <i class="bi bi-list-ul me-1"></i>Answer Options
+          </div>
+          <div class="row g-3 mb-4">
+            <div class="col-md-4">
+              <div class="p-3 rounded-3" style="background:#eff6ff;border:1.5px solid #dbeafe;">
+                <label class="form-label" style="color:#2563eb;">Option A</label>
+                {{ form.option_one }}
+                {% if form.option_one.errors %}<div style="color:#dc2626;font-size:.8rem;margin-top:.3rem;">{{ form.option_one.errors }}</div>{% endif %}
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 rounded-3" style="background:#eff6ff;border:1.5px solid #dbeafe;">
+                <label class="form-label" style="color:#1d4ed8;">Option B</label>
+                {{ form.option_two }}
+                {% if form.option_two.errors %}<div style="color:#dc2626;font-size:.8rem;margin-top:.3rem;">{{ form.option_two.errors }}</div>{% endif %}
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 rounded-3" style="background:#eff6ff;border:1.5px solid #dbeafe;">
+                <label class="form-label" style="color:#3b82f6;">Option C</label>
+                {{ form.option_three }}
+                {% if form.option_three.errors %}<div style="color:#dc2626;font-size:.8rem;margin-top:.3rem;">{{ form.option_three.errors }}</div>{% endif %}
+              </div>
+            </div>
+          </div>
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary px-4 py-2">
+              <i class="bi bi-send me-2"></i>Publish Poll
+            </button>
+            <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary px-4">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
